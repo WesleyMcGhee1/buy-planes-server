@@ -9,3 +9,43 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Plane {
+  id Int @default(autoincrement()) @id
+  name String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  price Float
+  sale Boolean @default(false)
+  availability Availability @default(IN_STORE)
+  description Description?
+  reviews Review[]
+  tags Tag[]
+}
+
+model Description {
+  id Int @default(autoincrement()) @id
+  content String
+  plane Plane @relation(fields: [planeId], references: [id])
+  planeId Int  @unique
+}
+
+model Review {
+  id Int @default(autoincrement()) @id
+  title String
+  content String
+  rating Int
+  plane Plane @relation(fields: [planeId], references: [id])
+  planeId Int
+}
+
+model Tag {
+  id Int @default(autoincrement()) @id
+  name String 
+  plane Plane[]
+}
+
+enum Availability {
+  ONLINE
+  IN_STORE
+}
